@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<simulation world-size="300um 90um" dt="0.5ms" background="black">
-
-    <parameter name="T1" value="0.1uM" />
+<simulation world-size="300um 90um" dt="16ms" background="black">
 
     <plugin name="cell" />
     <plugin name="object-generator" />
@@ -14,50 +12,51 @@
         <layer name="velocity" key="V" />
         <layer name="density" key="B" />
         <layer name="fluid" key="N" />
+        <layer name="objects" key="1" enabled="true" />
     </visualization>
 
     <program name="produce-gfp" language="stochastic-reactions">
 <![CDATA[
-        null > 3 > env GFP;
+        null > 100/s > env GFP;
 ]]>
    </program>
    <program name="produce-rfp" language="stochastic-reactions">
 <![CDATA[
-        null > 3 > env RFP;
+        null > 100/s > env RFP;
 ]]>
     </program>
-   <program name="produce-cfp" language="stochastic-reactions">
+    <program name="produce-cfp" language="stochastic-reactions">
 <![CDATA[
-        null > 3 > env CFP;
+        null > 100/s > env CFP;
 ]]>
     </program>
-   <program name="produce-yfp" language="stochastic-reactions">
+    <program name="produce-yfp" language="stochastic-reactions">
 <![CDATA[
-        null > 3 > env YFP;
+        null > 100/s > env YFP;
 ]]>
     </program>
 
     <!-- Define diffusion module -->
-    <module name="diffusion" grid="301 91">
-        <signal name="GFP" diffusion-rate="50um2/s" degradation-rate="0.01/s" color="green" saturation="13nM" />
-        <signal name="RFP" diffusion-rate="50um2/s" degradation-rate="0.01/s" color="red" saturation="13nM" />
-        <signal name="CFP" diffusion-rate="50um2/s" degradation-rate="0.01/s" color="cyan" saturation="13nM" />
-        <signal name="YFP" diffusion-rate="50um2/s" degradation-rate="0.01/s" color="yellow" saturation="13nM" />
+    <module name="diffusion" grid="301 91" inner-iterations="1">
+        <signal name="GFP" diffusion-rate="10um2/s" degradation-rate="0.1/s" color="green" saturation="13nM" />
+        <signal name="RFP" diffusion-rate="10um2/s" degradation-rate="0.1/s" color="red" saturation="13nM" />
+        <signal name="CFP" diffusion-rate="10um2/s" degradation-rate="0.1/s" color="cyan" saturation="13nM" />
+        <signal name="YFP" diffusion-rate="10um2/s" degradation-rate="0.1/s" color="yellow" saturation="13nM" />
     </module>
 
     <!-- Object generator -->
     <module name="object-generator">
-        <object class="cell.Yeast" rate="15/s" programs="produce-gfp" position="-145um 0" size="0 80um" />
-        <object class="cell.Yeast" rate="15/s" programs="produce-rfp" position="-145um 0" size="0 80um" />
-        <object class="cell.Yeast" rate="15/s" programs="produce-yfp" position="-145um 0" size="0 80um" />
-        <object class="cell.Yeast" rate="15/s" programs="produce-cfp" position="-145um 0" size="0 80um" />
+        <object class="cell.Yeast" rate="1/s" programs="produce-gfp" position="-145um 0" size="0 80um" />
+        <object class="cell.Yeast" rate="1/s" programs="produce-rfp" position="-145um 0" size="0 80um" />
+        <object class="cell.Yeast" rate="1/s" programs="produce-yfp" position="-145um 0" size="0 80um" />
+        <object class="cell.Yeast" rate="1/s" programs="produce-cfp" position="-145um 0" size="0 80um" />
     </module>
 
     <!-- Enable streamlines with diffusion -->
     <module name="streamlines"
             init-iterations="10000"
             init-file="%temp%/Diffusion-with-intercellular-reactions.cece.streamlines"
-            inlet-velocity="500um/s" 
+            inlet-velocity="5um/s"
             layout="none outlet none inlet"
             char-length="5um"
             number-nodes="5"
