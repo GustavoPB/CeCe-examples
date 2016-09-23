@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<simulation world-size="2000um 1000um" dt="1ms" iterations="1000" _iterations="1" background="black" length-coefficient="1e-1">
+
+    <plugin name="streamlines" />
+    <plugin name="obstacles-svg" filename="join.svg" color="white" />
+    <plugin name="object-streamlines-generator" />
+    <plugin name="cell" />
+    <plugin name="fluorescence" />
+    <plugin name="stochastic-reactions" />
+
+    <visualization enabled="true">
+        <layer name="velocity" key="V" />
+        <layer name="density" key="B" />
+        <layer name="fluid" key="N" />
+        <layer name="physics" key="D" />
+        <layer name="fluorescence" key="F" enabled="true" />
+        <layer name="objects" key="G" enabled="true" />
+    </visualization>
+
+    <program name="P1" language="stochastic-reactions">
+<![CDATA[
+    null > 50/s > RFP;
+]]>
+    </program>
+
+    <program name="P2" language="stochastic-reactions">
+<![CDATA[
+    GFP > 10/s > null;
+]]>
+    </program>
+
+    <module name="streamlines"
+            init-iterations="1000"
+            init-file="%temp%/Fluorescence.streamlines.cece"
+            char-length="20um"
+            number-nodes="5"
+            tau="1.3"
+            layer-magnitude="velocity"
+            layer-density="density"
+            layer-dynamics="fluid"
+            height="40um"
+    >
+        <boundary name="i1" type="inlet" position="top" offset="-500um" size="1000um" inlet-flow-rate="5nl/s" inlet-profile="constant" />
+        <boundary name="i2" type="inlet" position="bottom" offset="-500um" size="1000um" inlet-flow-rate="10nl/s" inlet-profile="constant" />
+
+        <boundary name="o1" type="outlet" position="top" offset="500um" size="1000um" />
+        <boundary name="o2" type="outlet" position="bottom" offset="500um" size="1000um" />
+    </module>
+
+    <module name="object-generator">
+        <object class="cell.Yeast" concentration="500/nl" boundary="i1" programs="P1">
+            <_molecule name="RFP" amount="1000" />
+            <molecule name="TAG_1" amount="1000" />
+        </object>
+        <object class="cell.Yeast" concentration="200/nl" boundary="i2" programs="P2">
+            <molecule name="GFP" amount="1000" />
+            <molecule name="TAG_2" amount="1000" />
+        </object>
+        <object class="cell.Yeast" concentration="20/nl" boundary="i2">
+            <molecule name="YFP" amount="1000" />
+            <molecule name="TAG_2" amount="1000" />
+        </object>
+    </module>
+
+    <module name="fluorescence" size="200 100" layer="fluorescence" saturation="1/um2" />
+
+    <module name="fluorescence.export"
+            filename="fluorescence"
+            active="500-1000"
+            position="0 0"
+            size="200um 200um"
+            color="red"
+            layer="fluorescence"
+            total="true"
+    />
+
+</simulation>
+
+
