@@ -4,12 +4,11 @@
 
     <plugin name="cell" />
     <plugin name="obstacle" />
-    <plugin name="streamlines-channel" />
-    <plugin name="diffusion" />
-    <_plugin name="diffusion-streamlines" />
+    <plugin name="streamlines" />
+    <plugin name="diffusion-streamlines" />
     <plugin name="stochastic-reactions" />
     <plugin name="object-generator" />
-    <plugin name="obstacles-svg" filename="demo.svg" color="white" />
+    <plugin name="obstacles-svg" filename="Topology-streamlines.svg" color="white" />
 
     <!-- Define visualization layers -->
     <visualization enabled="true">
@@ -31,7 +30,7 @@
             inlet-velocity="200um/s"
             layout="none outlet none inlet"
             init-iterations="20000"
-            init-file="%temp%/demo.cece.streamlines"
+            init-file="%temp%/Topology-streamlines.cece.streamlines"
             char-length="40um"
             number-nodes="20"
             tau="1.5"
@@ -44,22 +43,22 @@
 
     <program name="p1" language="stochastic-reactions">
 <![CDATA[
-        null > 1 > env GFP;
-        if env RFP > 1nM: null > 0.5 > GFP;
+        null > 90/s > env GFP;
+        if env RFP > 1nM: null > 30/s > GFP;
 ]]>
     </program>
 
     <program name="p2" language="stochastic-reactions">
 <![CDATA[
-        null > 1 > env RFP;
-        if env GFP > 1nM: null > 0.5 > RFP;
+        null > 90/s > env RFP;
+        if env GFP > 1nM: null > 30/s > RFP;
 ]]>
     </program>
 
     <!-- Generate yeast cells -->
     <module name="object-generator">
-        <object class="cell.Yeast" rate="10/s" programs="p1" velocity="50um/s 0" position-min="-640um -300um" position-max="-640um -200um" />
-        <object class="cell.Yeast" rate="10/s" programs="p2" velocity="50um/s 0" position-min="-640um -300um" position-max="-640um -200um" />
+        <object class="cell.Yeast" rate="10/s" programs="p1" velocity="50um/s 0" position-min="-600um -300um" position-max="-600um -200um" />
+        <object class="cell.Yeast" rate="10/s" programs="p2" velocity="50um/s 0" position-min="-600um -300um" position-max="-600um -200um" />
     </module>
 
 </simulation>
