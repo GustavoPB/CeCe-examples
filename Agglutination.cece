@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<!-- Simulation definition -->
+<simulation world-size="1000um 1000um" dt="1ms" background="white" length-coefficient="1e-1">
+
+    <!--
+    Simulation parameters.
+
+    Can be changed by passing arguments to executable:
+    $ ./cece-cli -p count 5000 -p ratio 0.3 Agglutination.cece
+     -->
+    <parameter name="count" value="2000" />
+    <parameter name="ratio" value="0.5" />
+
+    <plugin name="python" />
+    <plugin name="agglutination" />
+    <plugin name="cell" />
+    <plugin name="obstacle" />
+
+    <visualization>
+        <layer name="physics" key="D" />
+    </visualization>
+
+    <!-- Define border walls -->
+    <object class="obstacle.Rectangle" position="0um -500um" size="1000um 10um" visible="true" />
+    <object class="obstacle.Rectangle" position="0um 500um" size="1000um 10um" visible="true" />
+    <object class="obstacle.Rectangle" position="-500um 0um" size="10um 1000um" visible="true" />
+    <object class="obstacle.Rectangle" position="500um 0um" size="10um 1000um" visible="true" />
+
+    <module name="agglutination" >
+        <bond association-constant="1000000" disassociation-constant="1" ligand="TAG_1" receptor="TAG_2" />
+    </module>
+
+    <!-- Define custom types with predefined molecules -->
+    <type name="Yeast1" type="cell.Yeast">
+        <molecule name="RFP" amount="1000" />
+        <molecule name="TAG_1" amount="1000" />
+    </type>
+
+    <type name="Yeast2" type="cell.Yeast">
+        <molecule name="GFP" amount="1000" />
+        <molecule name="TAG_2" amount="1000" />
+    </type>
+
+    <!-- Generate cells at random places -->
+    <init language="python">
+<![CDATA[
+import core
+import random
+
+x_ranges = [-190, 190]
+y_ranges = [-190, 190]
+
+def __call__(simulation):
+    count = int(simulation.getParameter("count"))
+    ratio = float(simulation.getParameter("ratio"))
+    count1 = int(count * (1 - ratio))
+    count2 = int(count * ratio)
+
+    # Generate cell of the first type
+    for i in xrange(1, count1):
+        yeast = simulation.createObject("Yeast1")
+        x = random.uniform(x_ranges[0], x_ranges[1])
+        y = random.uniform(y_ranges[0], y_ranges[1])
+        yeast.position = core.VectorPosition(x, y)
+
+    # Generate cell of the second type
+    for i in xrange(1, count2):
+        yeast = simulation.createObject("Yeast2")
+        x = random.uniform(x_ranges[0], x_ranges[1])
+        y = random.uniform(y_ranges[0], y_ranges[1])
+        yeast.position = core.VectorPosition(x, y)
+]]>
+    </init>
+
+    <!-- Apply random forces to the cells each iteration -->
+    <module name="brownian" language="python">
+<![CDATA[
+import core
+import random
+
+Fx_ranges = [-1e-4, 1e-4]
+Fy_ranges = [-1e-4, 1e-4]
+
+def update(dt, simulation):
+    count = simulation.objectCount
+    for i in xrange(0, count):
+        object = simulation.getObject(i)
+        Fx = random.uniform(Fx_ranges[0], Fx_ranges[1])
+        Fy = random.uniform(Fy_ranges[0], Fy_ranges[1])
+        object.applyForce(core.VectorForce(Fx, Fy))
+]]>
+    </module>
+
+</simulation>
