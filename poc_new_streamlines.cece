@@ -13,12 +13,13 @@
     <module name="object-generator">
         <object class="cell.Ecoli" 
         supervisedVolume="80um3" 
-        steadyDensity="0.3"
+        steadyDensity="0.5"
         pidKp="5" 
         pidKi="10" 
         pidKd="0" 
         pidMax="1000" 
         pidMin="0" 
+        pathToCsvFile="/Users/Gus/Desktop/testfile.txt"
         velocity="500um/s 0" volume="5um3" position-min="-95 45" position-max="-95 55"
         volume-max="6um3" growth-rate="10/s" volume-bud-create="5.1um3" volume-bud-release="5.5um3">
         </object>
