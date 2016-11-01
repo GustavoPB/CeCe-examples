@@ -13,7 +13,7 @@
     <module name="object-generator">
         <object class="cell.Ecoli" 
         supervisedVolume="80um3" 
-        steadyDensity="0.5"
+        steadyDensity="1"
         pidKp="5" 
         pidKi="10" 
         pidKd="0" 
@@ -23,22 +23,28 @@
         volume-max="6um3" growth-rate="10/s" volume-bud-create="5.1um3" volume-bud-release="5.5um3">
         </object>
         
-        <object class="cell.Cell" 
+        <object class="cell.Phage" 
         supervisedVolume="80um3" 
-        steadyDensity="0.5"
+        steadyDensity="1.5"
         pidKp="5" 
         pidKi="10" 
         pidKd="0" 
         pidMax="1000" 
         pidMin="0" 
-        velocity="500um/s 0" volume="1um3" position-min="-95 45" position-max="-95 55">
+        velocity="500um/s 0" volume="1um3" position-min="-95 45" position-max="-95 55" 
+        fitness-periodicity="100ms" fitness-periodicity-amplitude="10" 
+        fitness-solution="5"
+        fitness-solution-delta="3"
+        fitness-distance="15" 
+        fitness-distance-delta="5">
+        <molecule name="GFP" amount="1000" />
         </object>      
     </module>
 	
     <module name="streamlines" char-length="20" number-nodes="10" inlet-velocity="1500um/s" layout="barrier outlet barrier inlet"/>
 
 	<module name="infection">
-	<bond pathogen="cell.Cell" 
+	<bond pathogen="cell.Phage" 
 			host="cell.Ecoli" 
 			association-constant="10" 
 			disassociation-constant="10"/>
