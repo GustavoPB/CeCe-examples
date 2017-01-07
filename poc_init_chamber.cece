@@ -9,7 +9,7 @@
     <plugin name="cell" />
     <plugin name="object-generator" />
     <plugin name="streamlines" />
-    <plugin name="bioreactor" pipe-top="20um" pipe-radius="5um" size="80um" visible="true" isSymmetric="false"/>
+    <plugin name="bioreactor" pipe-top="20" pipe-radius="5" size="80" visible="true" isSymmetric="false"/>
     <plugin name="infection" />
     
 
@@ -38,14 +38,22 @@ import core
 import random
 
 # Should delete this part an invoque to bioreactor size
-x_ranges = [-38, 38]
-y_ranges = [-34, 54]
 
 def __call__(simulation):
     objCount = int(simulation.getParameter("objcount"))
     moi = float(simulation.getParameter("moi"))
     ecoliCount = int(objCount * (1 - moi))
     m13Count = int(objCount * moi)
+    
+    bioreactorSize = float(simulation.getParameter("bioreactor-size"))
+    bioreactorPipeRadius = float(simulation.getParameter("bioreactor-pipe-radius"))
+    bioreactorPipeTop = float(simulation.getParameter("bioreactor-pipe-top"))
+    
+    x_span = bioreactorSize/2 - 2
+    y_neg_span = x_span - bioreactorPipeRadius
+    y_pos_span = y_neg_span + bioreactorPipeTop
+    x_ranges = [-x_span, x_span]
+    y_ranges = [-y_neg_span, y_pos_span]
 
     # Generate cell of the first type
     for i in xrange(1, ecoliCount):
