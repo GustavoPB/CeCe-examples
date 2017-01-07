@@ -13,7 +13,7 @@
     <plugin name="infection" />
     
 
-    <!-- Define tipes that will be used in simulation -->
+    <!-- Define types that will be used in simulation -->
         <type name="Ecoli" type="cell.Ecoli" 
         volume="1um3"
         volume-max="3um3" growth-rate="10/s" volume-bud-create="2.1um3" volume-bud-release="2.5um3">
@@ -36,8 +36,6 @@
 <![CDATA[
 import core
 import random
-
-# Should delete this part an invoque to bioreactor size
 
 def __call__(simulation):
     objCount = int(simulation.getParameter("objcount"))
