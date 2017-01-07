@@ -13,7 +13,7 @@
     <module name="object-generator">
         <object class="cell.Ecoli" 
         supervisedVolume="80um3" 
-        steadyDensity="1"
+        steadyDensity="0.2"
         pidKp="5" 
         pidKi="10" 
         pidKd="0" 
@@ -25,28 +25,30 @@
         
         <object class="cell.Phage" 
         supervisedVolume="80um3" 
-        steadyDensity="1.5"
-        pidKp="5" 
+        steadyDensity="40"
+        pidKp="0.5" 
         pidKi="10" 
         pidKd="0" 
-        pidMax="1000" 
+        pidMax="10" 
         pidMin="0" 
         velocity="500um/s 0" volume="1um3" position-min="-95 45" position-max="-95 55" 
-        fitness-periodicity="100ms" fitness-periodicity-amplitude="10" 
-        fitness-solution="5"
+        fitness-periodicity="200ms" fitness-periodicity-amplitude="5" 
+        fitness-solution="20"
         fitness-solution-delta="3"
         fitness-distance="15" 
-        fitness-distance-delta="5">
+        fitness-distance-delta="5"
+        mutation-probability="0.8"
+        mutation-amplitude="2">
         <molecule name="GFP" amount="1000" />
         </object>      
     </module>
 	
-    <module name="streamlines" char-length="20" number-nodes="10" inlet-velocity="1500um/s" layout="barrier outlet barrier inlet"/>
+    <module name="streamlines" char-length="20" number-nodes="10" inlet-velocity="1000um/s" layout="barrier outlet barrier inlet"/>
 
-	<module name="infection">
+	<module name="infection" info-file-path="/Users/Gus/Desktop/infectiontestfile.txt">
 	<bond pathogen="cell.Phage" 
 			host="cell.Ecoli" 
-			association-constant="10" 
-			disassociation-constant="10"/>
+			disassociation-constant="5"
+			max-offspring="3"/>
 			</module>
 </simulation>

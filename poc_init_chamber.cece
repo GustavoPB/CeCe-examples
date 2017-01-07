@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<!-- Simulation definition -->
+<simulation world-size="200um 150um" dt="1ms" background="white" length-coefficient="1e-1">
+
+    <parameter name="objcount" value="3000" />
+    <parameter name="moi" value="0.99" />
+
+	<plugin name="python" />
+    <plugin name="cell" />
+    <plugin name="object-generator" />
+    <plugin name="streamlines" />
+    <plugin name="bioreactor" pipe-top="20um" pipe-radius="5um" size="80um" visible="true" isSymmetric="false"/>
+    <plugin name="infection" />
+    
+
+    <!-- Define tipes that will be used in simulation -->
+        <type name="Ecoli" type="cell.Ecoli" 
+        volume="1um3"
+        volume-max="3um3" growth-rate="10/s" volume-bud-create="2.1um3" volume-bud-release="2.5um3">
+        </type>
+        
+        <type name="M13" type="cell.Phage" 
+		volume="0.5um3"
+        fitness-periodicity="200ms" fitness-periodicity-amplitude="5" 
+        fitness-solution="20"
+        fitness-solution-delta="3"
+        fitness-distance="15" 
+        fitness-distance-delta="5"
+        mutation-probability="0.8"
+        mutation-amplitude="2">
+        <molecule name="GFP" amount="1000" />
+        </type>
+        
+        <!-- Generate cells at random places -->
+    <init language="python">
+<![CDATA[
+import core
+import random
+
+# Should delete this part an invoque to bioreactor size
+x_ranges = [-38, 38]
+y_ranges = [-34, 54]
+
+def __call__(simulation):
+    objCount = int(simulation.getParameter("objcount"))
+    moi = float(simulation.getParameter("moi"))
+    ecoliCount = int(objCount * (1 - moi))
+    m13Count = int(objCount * moi)
+
+    # Generate cell of the first type
+    for i in xrange(1, ecoliCount):
+        ecoli = simulation.createObject("Ecoli")
+        x = random.uniform(x_ranges[0], x_ranges[1])
+        y = random.uniform(y_ranges[0], y_ranges[1])
+        ecoli.position = core.VectorPosition(x, y)
+
+    # Generate cell of the second type
+    for i in xrange(1, m13Count):
+        m13 = simulation.createObject("M13")
+        x = random.uniform(x_ranges[0], x_ranges[1])
+        y = random.uniform(y_ranges[0], y_ranges[1])
+        m13.position = core.VectorPosition(x, y)
+]]>
+    </init>
+    
+    <module name="streamlines" char-length="20" number-nodes="10" inlet-velocity="1000um/s" layout="barrier outlet barrier inlet"/>
+          
+</simulation>
