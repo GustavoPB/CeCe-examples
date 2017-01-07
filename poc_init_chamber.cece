@@ -2,7 +2,7 @@
 <!-- Simulation definition -->
 <simulation world-size="200um 150um" dt="1ms" background="white" length-coefficient="1e-1">
 
-    <parameter name="objcount" value="3000" />
+    <parameter name="objcount" value="1000" />
     <parameter name="moi" value="0.99" />
 
 	<plugin name="python" />
@@ -48,21 +48,22 @@ def __call__(simulation):
     bioreactorSize = float(simulation.getParameter("bioreactor-size"))
     bioreactorPipeRadius = float(simulation.getParameter("bioreactor-pipe-radius"))
     bioreactorPipeTop = float(simulation.getParameter("bioreactor-pipe-top"))
+    yWorldSizeHalf = simulation.worldSize.y/2
     
-    x_span = bioreactorSize/2 - 2
-    y_neg_span = x_span - bioreactorPipeRadius
-    y_pos_span = y_neg_span + bioreactorPipeTop
+    x_span = bioreactorSize/2 - 1
+    y_pos_span = yWorldSizeHalf - bioreactorPipeTop - 1
+    y_neg_span = y_pos_span - bioreactorSize - 2 * bioreactorPipeRadius + 2
     x_ranges = [-x_span, x_span]
-    y_ranges = [-y_neg_span, y_pos_span]
+    y_ranges = [y_neg_span, y_pos_span]
 
-    # Generate cell of the first type
+    # Generate cell of E. Coli type
     for i in xrange(1, ecoliCount):
         ecoli = simulation.createObject("Ecoli")
         x = random.uniform(x_ranges[0], x_ranges[1])
         y = random.uniform(y_ranges[0], y_ranges[1])
         ecoli.position = core.VectorPosition(x, y)
 
-    # Generate cell of the second type
+    # Generate cell of Phage type
     for i in xrange(1, m13Count):
         m13 = simulation.createObject("M13")
         x = random.uniform(x_ranges[0], x_ranges[1])
