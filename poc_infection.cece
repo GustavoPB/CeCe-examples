@@ -32,7 +32,7 @@
         pidMax="10" 
         pidMin="0" 
         velocity="500um/s 0" volume="1um3" position-min="-95 45" position-max="-95 55" 
-        fitness-periodicity="200ms" fitness-periodicity-amplitude="5" 
+        good-fitness-proportion="0.1" 
         fitness-solution="20"
         fitness-solution-delta="3"
         fitness-distance="15" 
@@ -45,9 +45,10 @@
 	
     <module name="streamlines" char-length="20" number-nodes="10" inlet-velocity="1000um/s" layout="barrier outlet barrier inlet"/>
 
-	<module name="infection" info-file-path="/Users/Gus/Desktop/infectiontestfile.txt">
+	<module name="infection" info-file-path="/Users/Gus/Desktop/infectiontestfile.txt" tracked-pathogen="cell.Phage">
 	<bond pathogen="cell.Phage" 
 			host="cell.Ecoli" 
+			probability-of-infection="0.5" 
 			disassociation-constant="5"
 			max-offspring="3"/>
 			</module>

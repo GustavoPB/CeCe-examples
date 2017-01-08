@@ -2,7 +2,7 @@
 <!-- Simulation definition -->
 <simulation world-size="200um 150um" dt="1ms" background="white" length-coefficient="1e-1">
 
-    <parameter name="objcount" value="1000" />
+    <parameter name="objcount" value="2000" />
     <parameter name="moi" value="0.99" />
 
 	<plugin name="python" />
@@ -21,7 +21,7 @@
         
         <type name="M13" type="cell.Phage" 
 		volume="0.5um3"
-        fitness-periodicity="200ms" fitness-periodicity-amplitude="5" 
+        good-fitness-proportion="0.1" 
         fitness-solution="20"
         fitness-solution-delta="3"
         fitness-distance="15" 
@@ -71,5 +71,12 @@ def __call__(simulation):
     </init>
     
     <module name="streamlines" char-length="20" number-nodes="10" inlet-velocity="1000um/s" layout="barrier outlet barrier inlet"/>
-          
+    
+    <module name="infection" info-file-path="/Users/Gus/Desktop/infectiontestfile.txt" tracked-pathogen="M13">
+	<bond pathogen="M13" 
+			host="Ecoli" 
+			probability-of-infection="1" 
+			disassociation-constant="5"
+			max-offspring="3"/>
+			</module>
 </simulation>
