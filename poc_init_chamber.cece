@@ -2,7 +2,7 @@
 <!-- Simulation definition -->
 <simulation world-size="200um 150um" dt="1ms" background="white" length-coefficient="1e-1">
 
-    <parameter name="objcount" value="2000" />
+    <parameter name="objcount" value="5000" />
     <parameter name="moi" value="0.99" />
 
 	<plugin name="python" />
@@ -21,14 +21,14 @@
         
         <type name="M13" type="cell.Phage" 
 		volume="0.5um3"
-        good-fitness-proportion="0.1" 
+        good-fitness-proportion="1" 
         fitness-solution="20"
         fitness-solution-delta="3"
         fitness-distance="15" 
         fitness-distance-delta="5"
         mutation-probability="0.8"
-        mutation-amplitude="2">
-        <molecule name="GFP" amount="1000" />
+        mutation-amplitude="2"
+        search-time="20ms">
         </type>
         
         <!-- Generate cells at random places -->
@@ -75,8 +75,8 @@ def __call__(simulation):
     <module name="infection" info-file-path="/Users/Gus/Desktop/infectiontestfile.txt" tracked-pathogen="M13">
 	<bond pathogen="M13" 
 			host="Ecoli" 
-			probability-of-infection="1" 
-			disassociation-constant="5"
-			max-offspring="3"/>
+			probability-of-infection="0.5" 
+			max-offspring="3" 
+			elipse-time="30"/>
 			</module>
 </simulation>
