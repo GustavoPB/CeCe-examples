@@ -49,7 +49,7 @@
 	<bond pathogen="cell.Phage" 
 			host="cell.Ecoli" 
 			probability-of-infection="0.5" 
-			disassociation-constant="5"
-			max-offspring="3"/>
+			max-offspring="3" 
+			eclipse-time="5"/>
 			</module>
 </simulation>

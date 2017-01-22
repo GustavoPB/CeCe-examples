@@ -28,10 +28,10 @@
         fitness-distance-delta="5"
         mutation-probability="0.2"
         mutation-amplitude="2"
-        search-time="10ms">
-        </type>
-        
-        <!-- Generate cells at random places -->
+        search-time="30ms">
+        </type> 
+      
+ 	<!-- Chamber initialization - Generate simulation objects at random places -->
     <init language="python">
 <![CDATA[
 import core
@@ -70,8 +70,15 @@ def __call__(simulation):
 ]]>
     </init>
     
+    <!-- Constant inflow of fresh Ecoli -->
+      <module name="object-generator">
+      	<object class="Ecoli" velocity="500um/s 0" position-min="-95 45" position-max="-95 55" rate="100/s"/>
+      </module> 
+    
+    <!-- Selective inflow -->
     <module name="streamlines" char-length="20" number-nodes="10" inlet-velocity="1000um/s" layout="barrier outlet barrier inlet"/>
     
+    <!-- Parameters that handle infection behavior -->
     <module name="infection" info-file-path="/Users/Gus/Desktop/infectiontestfile.txt" tracked-pathogen="M13">
 	<bond pathogen="M13" 
 			host="Ecoli" 
