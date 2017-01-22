@@ -2,7 +2,7 @@
 <!-- Simulation definition -->
 <simulation world-size="200um 150um" dt="1ms" background="white" length-coefficient="1e-1">
 
-    <parameter name="objcount" value="3000" />
+    <parameter name="objcount" value="2000" />
     <parameter name="moi" value="0.99" />
 
 	<plugin name="python" />
@@ -16,12 +16,13 @@
     <!-- Define types that will be used in simulation -->
         <type name="Ecoli" type="cell.Ecoli" 
         volume="1um3"
-        volume-max="3um3" growth-rate="10/s" volume-bud-create="2.1um3" volume-bud-release="2.5um3">
+        volume-max="3um3" growth-rate="10/s" growth-penalty-rate="5/s" 
+        volume-bud-create="2.1um3" volume-bud-release="2.5um3">
         </type>
         
         <type name="M13" type="cell.Phage" 
 		volume="0.5um3"
-        good-fitness-proportion="1" 
+        good-fitness-proportion="0.5" 
         fitness-solution="20"
         fitness-solution-delta="3"
         fitness-distance="15" 
