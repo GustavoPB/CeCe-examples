@@ -16,7 +16,7 @@
     <!-- Define types that will be used in simulation -->
         <type name="Ecoli" type="cell.Ecoli" 
         volume="1um3"
-        volume-max="3um3" growth-rate="10/s" growth-penalty-rate="4/s" 
+        volume-max="3um3" growth-rate="10/s" growth-penalty-rate="2/s" 
         volume-bud-create="2.1um3" volume-bud-release="2.5um3">
         </type>
         
