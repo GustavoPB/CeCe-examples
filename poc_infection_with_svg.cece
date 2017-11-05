@@ -1,22 +1,34 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <!-- Simulation definition -->
-<simulation world-size="200um 150um" dt="5s" background="white" length-coefficient="1e-1">
+<simulation world-size="220um 200um" dt="1s" background="white" length-coefficient="1e-1">
 
-    <parameter name="objcount" value="1000" />
-    <parameter name="moi" value="0.99" />
+    <parameter name="objcount" value="10000" />
+    <parameter name="moi" value="0.998" />
 
 	<plugin name="python" />
     <plugin name="cell" />
     <plugin name="object-generator" />
     <plugin name="streamlines" />
-    <plugin name="bioreactor" pipe-top="20" pipe-radius="10" size="80" visible="true" isSymmetric="false"/>
     <plugin name="infection" />
+     <!--
+        Plugin loads SVG file and create obstacles from it.
+        Path is taken as relative from simulation directory.
+    -->
+    <plugin name="obstacles-svg" filename="reactor.svg" color="black" />
     
+    
+    <!-- Define visualization layers -->
+    <visualization enabled="true">
+        <layer name="velocity" key="V" />
+        <layer name="density" key="B" />
+        <layer name="physics" key="D" />
+        <layer name="fluid" key="N" />
+    </visualization>
 
     <!-- Define types that will be used in simulation -->
         <type name="Ecoli" type="cell.Ecoli" 
         volume="1.5um3"
-        volume-max="3um3" growth-rate="0.00063/s" growth-penalty-rate="0.0002/s" 
+        volume-max="3um3" growth-rate="0.09um3/s" growth-penalty-rate="0.03um3/s" 
         volume-bud-create="2.1um3" volume-bud-release="2.5um3">
         </type>
         
@@ -27,9 +39,10 @@
         fitness-solution-delta="3"
         fitness-distance="10" 
         fitness-distance-delta="5"
-        mutation-probability="0.8"
-        mutation-amplitude="4"
-        search-time="900s">
+        search-time="30s">
+        <mutation time="0s" probability="0.2" amplitude="5"/>
+        <mutation time="300s" probability="0.5" amplitude="2"/>
+        <mutation time="600s" probability="0.7" amplitude="1"/>
         </type> 
       
  	<!-- Chamber initialization - Generate simulation objects at random places -->
@@ -38,23 +51,16 @@
 import core
 import random
 
-def __call__(simulation):
+def call(simulation):
     objCount = int(simulation.getParameter("objcount"))
     moi = float(simulation.getParameter("moi"))
     ecoliCount = int(objCount * (1 - moi))
     m13Count = int(objCount * moi)
-    
-    bioreactorSize = float(simulation.getParameter("bioreactor-size"))
-    bioreactorPipeRadius = float(simulation.getParameter("bioreactor-pipe-radius"))
-    bioreactorPipeTop = float(simulation.getParameter("bioreactor-pipe-top"))
-    yWorldSizeHalf = simulation.worldSize.y/2
-    
-    x_span = bioreactorSize/2 - 1
-    y_pos_span = yWorldSizeHalf - bioreactorPipeTop - 1
-    y_pos_fake = yWorldSizeHalf - bioreactorPipeTop - 1 - 2 * bioreactorPipeRadius
-    y_neg_span = y_pos_span - bioreactorSize - 2 * bioreactorPipeRadius + 2
-    x_ranges = [-x_span, x_span]
-    y_ranges = [y_neg_span, y_pos_fake]
+
+    y_span = 75
+    x_span = 110
+    x_ranges = [-x_span+20, x_span-20]
+    y_ranges = [-y_span, y_span]
 
     # Generate cell of E. Coli type
     for i in xrange(1, ecoliCount):
@@ -71,23 +77,36 @@ def __call__(simulation):
         m13.position = core.VectorPosition(x, y)
 ]]>
     </init>
-    
+     
     <!-- Constant inflow of fresh Ecoli -->
       <module name="object-generator">
-      	<object class="Ecoli" velocity="1um/s 0um/s" position-min="-40 26" position-max="-40 34" rate="0.001/s"/>
+      	<object class="Ecoli" velocity="0um/s 500um/s" rate="0.01/s"
+      	position-min="-5 30" position-max="10 30"/>
       </module> 
+
+   
+      <!--
+      <module name="object-generator">
+      	<object class="M13" velocity="0um/s 0um/s" rate="5/s"
+      	position-min="-100 -5" position-max="-100 5"/>
+      </module>
+       -->
     
     <!-- Selective inflow -->
-    <module name="streamlines" init-iterations="400" char-length="10" number-nodes="15" inlet-velocity="20um/s" layout="barrier outlet barrier inlet"/>
+    <module name="streamlines" char-length="25" init-iterations="1000" number-nodes="25" 
+    dynamic="false" inlet-velocity="1.3um/s" layout="inlet outlet inlet outlet"
+    tau="1.3"
+    layer-magnitude="velocity" layer-density="density" layer-dynamics="fluid"/>
     
     
     <!-- Parameters that handle infection behavior -->
-    <module name="infection" info-file-path="/Users/Gus/Desktop/infectiontestfile.txt" tracked-pathogen="M13">
+    
+    <module name="infection" info-file-path="/Users/Gus/Desktop/infection-output/simTest.csv" print-interval="1" tracked-pathogen="M13">
 	<bond pathogen="M13" 
 			host="Ecoli" 
 			probability-of-infection="0.2" 
-			max-offspring="3" 
-			eclipse-time="60s"
-			ppr="60s"/>
+			max-offspring="7" 
+			eclipse-time="0s"
+			ppr="1s"/>
 			</module>
 </simulation>
